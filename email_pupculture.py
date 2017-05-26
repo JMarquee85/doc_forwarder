@@ -5,6 +5,7 @@
 import os
 import gspread
 import smtplib
+import dropbox
 from oauth2client.service_account import ServiceAccountCredentials
 from slacker import Slacker
 
@@ -72,7 +73,7 @@ def email_pupculture():
 		msg = MIMEMultipart()
 		msg['Subject'] = "New Registration from " + pet_name.upper() + last_name.upper() + "!"
 		msg['From'] = me
-		msg['To'] = you, admin_email
+		msg['To'] = you
 
 		body = first_name.upper() + " " + last_name.upper() + " has registered their dog " + pet_name.upper() + " with pupculture!\n\n Please Note: uploaded customer vaccinations and dog images are uploaded to the Dropbox at http://pupculturenyc.com/upload"
 	
@@ -118,4 +119,25 @@ def email_pupculture():
 		with open('maillog.txt', 'a') as mail_log:
 			mail_log.write(last_name.upper() + ', ' + pet_name.upper() + ': ' + str(today_date) + "\n")
 		
+		'''
+		##### Saving to Dropbox #####
+		print("\nSaving file to Dropbox ... ")
+		client = dropbox.client.DropboxClient(p_con.db_app_token)
+		print 'linked account: ', client.account_info()
+
+		os.chdir('submitted_customer_files')
+				
+		f = open(cust_filename, 'rb')
+		response = client.put_file(('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx"), 'f') 
+		print 'uploaded ', response
+		
+		folder_metadata = client.metadata('/')
+		print 'metadata: ', folder_metadata
+		
+		f, metadata = client.get_file_and_metadata('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx")
+		out = open('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx", 'wb')
+		out.write(f.read())
+		out.close()
+		print metadata
+		'''
 		return

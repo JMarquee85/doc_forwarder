@@ -26,4 +26,5 @@ private_slack_token = ['ADD SLACK TOKEN HERE']
 # better protect password information 
 serv_email_address = ['ADD SERVER EMAIL ADDRESS HERE']
 serv_email_password = ['ADD SERVER EMAIL PASSWORD HERE']
+admin_email = ['ADD ADMIN EMAIL ADDRESS HERE']
 
