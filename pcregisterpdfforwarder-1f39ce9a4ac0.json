@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pcregisterpdfforwarder",
+  "private_key_id": "1f39ce9a4ac00701826acd5547a149ad371a8b21",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCsjAawBqdF4LOI\n9SnmuTVmhSsW7Y377HrDpLDHwmwwtJY5KJHFZnvkCsRlagwDu5s/ZZc/djvt8iBB\ne4F5rKzqLaeAD0ommO+XTSmKgP2zEcOMKSsGV0n1xolyviWe/tevPxbzWTJXjnv8\n/kbOmvdKtnReuduJQcFYsQnt7cMfbI/CAww9Jdq9QCcEVAzIP2Rda1wbS9tnSn6/\ncPtQ1afLAuFKy5u5UhgmkZcgQxAccWBYG71SvrFGR2fJe5ToaB1iH1vSmut2yfID\nu4W00OaScE26TZCR6/p0XQwcIPHdZxYDvuV0BSVDixThiTX4fikyc8P2aUdKzPsb\nZby/9JdDAgMBAAECggEAGyuxoeZqUMahft+cSYjAr/QoZOPjh9glPMmiTNKA1uqY\n/Uc2LS+GMtK/OnkIi03vlHwa5RNpPH70NVuNd+uJDxdBWRkPRCSxFdJAyF6nlJsn\nf9q7u7PjIaCx5C+tHOxkamQ06P0SwFbfj2c7Hy2n40v35zK9L0/7ckvulFjscPYV\nEX3OSgq0w5rKklbGuXOU3395jq00QDV1b5Zi5WdCrSNlw0ZIY0MV6McXw5qCSZki\nUBAagUNJlkS0ZgazQVIQLXR49dXgzg0+8dshmetvIuLKlqttrdXvbhetFaCG7UYg\nd8oW2lC7OX8xv5G0axNsw9Ou956gbRIP1Dnl1AtwAQKBgQDhnGogcBzTMUyE2p5e\nnYnt8HqasO9PuooknvUBfoY3EbNK/6YIQqKnGo0f4OQQpHe2AbowVMfdEwFE0yug\nJIXO1HAvgFk4FA9oM5uK4r3FoRepHeOOViPxtO0H+1vr3X7JHHMihnsZTi5261q9\naMF76fbibIFJzCjKtWSF5tVdgQKBgQDDydei+UPM2PYPYaOYVOvhHXPnkEvNn89L\nUQJ2jWURwX6/AjclrsKpgl4mzv4CJSMLWX8OWOirFSbp8Hr85q3hBW63YJLmfPjt\nD2D8SGyab4Msg0Kbmoz2yZSmhtT8IbeJrkcIRqdHovH4FqRASBnA8r8YB8hvgvIO\n5ycRMZlewwKBgQCPKAILXThdJg4IyvPs04f+7DXPzG+9pn8bp6WNcixV6yxabYd7\n/FRbNjTQQpJUoRe47LWpD1LWy8VlV515+1LQn+ojqgxy0f/Ivd53rVJ/ga2SyP1o\nhu494/D3vJ5iNuTJVf0UrkKUFxDSspqcT0leiGH44KLVIe/MWHdVo9hFgQKBgQCR\nLNJjOvdGJr5Va23V32pEMwWld75tiwk3bKsp4vBFeTeVRHxFyc73x/4uQp/gUU8p\n9EOdDNoBOZ7wKmvXqOjXiKKvAMIMfDBL/3JHvyAgZ31ZfT7fiHrr5079J8834Xxp\nb7ul7FXPbYiED63dKFlIU/bUR7kcznjUChxSyHdT5wKBgQCFdmdaF+11eHbCDZZ7\nk/iVxS1hzHX2NPp5zafWRewGrhYZKihkr22oSBhj5v5FF90gtUyF5JaKWD5siCmM\n1gocZhY0xBwx7McMV5dmca48/BaKyKbN+MYD47fcm62E2xuYhvAqQ3FSp1Xe9XDA\nfuloO04XWnVaOlx4CSQTA6iJSA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "pcregisterpdfforwarder@pcregisterpdfforwarder.iam.gserviceaccount.com",
+  "client_id": "110493306788612856116",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pcregisterpdfforwarder%40pcregisterpdfforwarder.iam.gserviceaccount.com"
+}
