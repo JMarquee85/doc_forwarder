@@ -31,52 +31,57 @@
 #		Reassignment of gspread variables at the wrong time?
 
 from __future__ import print_function
-from mailmerge import MailMerge
-from datetime import datetime
+from requests.exceptions import ConnectionError
 
-import private_config as p_con
-import email_pupculture as e_pc
-
-# from slackclient import SlackClient
-from slacker import Slacker
-
-slack = Slacker(p_con.private_slack_token)
-
-### Private configuration file
-
-
-import dropbox
-# See https://pypi.python.org/pypi/dropbox for more information
 
 ##### GREETING #####
 print("\n\n\t-- Welcome to the pupculture Registration Forwarder --\n")
 print("\t -- Written by Josh Marcus - joshmarcus85@gmail.com --\n")
 print("This program creates pupculture registration forms by " +
 		"pulling data from the Google Form available at register.pupculturenyc.com and emails these forms to info@pupculturenyc.com.\n\nSee the code at https://github.com/JMarquee85/pc_doc_forwarder\n")
-print("\nImporting packages ... This may take a minute or so ...")
 
+##### Fix this later ... Internet connection check at the beginning of 
+##### the program ...
+'''
+### CHECKING INTERNET CONNECTION
+print("Checking for internet connection ... ")
+def is_connected():
+	try:
+		r = requests.get("http://google.com", timeout =0.001)
+	except ConnectionError as e:
+		print(e)
+		r = "Unable to connect ..." 
+print ("Connected!")
+'''
+
+##### MAIN IMPORT STATEMENTS #####
+from mailmerge import MailMerge
+from datetime import datetime
+import dropbox
+# See https://pypi.python.org/pypi/dropbox for more information
+
+##### MY IMPORTS #####
+print("\nImporting packages ... This may take a minute or so ...")
+### Private configuration file
+import private_config as p_con
+### Email PupCulture Function
+import email_pupculture as e_pc
+### Get Registration Function
+from get_reg import get_reg
 
 import gspread
-# The below header variable not actually used here, but worth looking into later
-headers = gspread.httpsession.HTTPSession(headers={'Connection':'Keep-Alive'})
 import json
+import sys
 import os
 import smtplib
 import csv
+import socket
+import urllib, re
 from oauth2client.service_account import ServiceAccountCredentials
 
-### POST MESSAGE TO SLACK CHANNEL
-
-# Write this message to slack channel
-# Change the channel in private_config.py
-slack.chat.post_message('#pcforwarder_messages', '\n\n*** PC Forwarder Application launched! ***')
-
-# MY IMPORTS
-from get_reg import get_reg
-from email_pupculture import email_pupculture
-import registration_email
-
-print("Packages imported!") 
+### SLACK CLIENT ###
+from slacker import Slacker
+slack = Slacker(p_con.private_slack_token)
 
 print("\nImporting the current date ...")
 print("Date imported!")
@@ -84,6 +89,23 @@ print("Date imported!")
 # Pulling Today's Date
 now = datetime.now()
 today_date = now.strftime("%m/%d/%Y %I:%M")
+
+### POST MESSAGE TO SLACK CHANNEL 
+
+# Write this message to slack channel
+# Change the channel in private_config.py
+# Hostname of current computer:
+this_host_hostname = socket.gethostname()
+# IP Address of current computer:
+this_host_ip  = re.search('"([0-9]*])"', urllib.urlopen("http://ip.jsontest.com/").read())
+
+# Post login log to Slack channel
+slack_launch_msg = ('\n\n** PC_DOC_FORWARDER **\n** Launch Detected: ** \n' + str(now) + '\nHostname:\t' + this_host_hostname
+						+ '\nIP Address: \t' + str(this_host_ip))
+slack.chat.post_message(p_con.slack_channel, slack_launch_msg)
+
+
+print("Packages imported!") 
 
 # Creating relative path directory
 this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -120,13 +142,19 @@ template = os.path.join(this_dir, 'pcregtemplate.docx')
 while True:
 	try:
 		get_reg()
-		#email_pupculture()
+		#email_pupculture() # Now called immediately at the end of get_reg()
 		#registration_email()
 	except KeyboardInterrupt:
 		print("\nOK! Exiting program!\n") 
 		### POST SLACK MESSAGE TO INFORM PROGRAM HALTED
-		slack.chat.post_message('#pcforwarder_messages', '\nThe program has been exited by keyboard entry!')
+		slack.chat.post_message(p_con.slack_channel, '\nThe program has been exited by keyboard entry!')
 		break
 	except IOError:
 		print("\nCreated customer not found in submitted_customer_documents directory! Trying again!")
 		continue
+	except ConnectionError:
+		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
+		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
+	except NewConnectionError:
+		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
+		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
