@@ -8,7 +8,7 @@ Project written for http://register.pupculturenyc.com<br>
  joshmarcus85@gmail.com <br>
  http://jmarquee.xyz <br>
 
-#WHAT IT DOES: 
+# WHAT IT DOES: <br>
  - Watches a Google Spreadsheet for changes 
  - Takes user input of application form received from Google Form and Google Sheet and creates
                                  a mailmerge docx based on an existing template (pupculture registration form). 
@@ -16,7 +16,7 @@ Project written for http://register.pupculturenyc.com<br>
  - (Coming soon!!) Stores documents in Dropbox and/ or system folder
  - Emails customer based on conditional response (if they would like to receive more information about a topic)
 
-#RUNNING IT
+# RUNNING IT: <br>
 
  Make sure you have all the required packages installed by running:
 	```pip install -r requirements.txt```
@@ -26,7 +26,7 @@ Project written for http://register.pupculturenyc.com<br>
  Then start the program with the following command:
     ```python main_loop.py```
 
-#CONFIGURATION
+# CONFIGURATION: <br>
  WARNING: DO NOT store the variables in this file publicly!!
  
  - Rename private_config_example.py to private_config.py
@@ -41,7 +41,7 @@ Project written for http://register.pupculturenyc.com<br>
  - Add the sender email address under serv_email_address in private_config.py. 
  Store the email password in serv_email password. (admin_email not currently used.)
 
-#STOPPING IT
+# STOPPING IT: <br> 
 Simply type ```ctrl-c``` to quit the program.
 
 
