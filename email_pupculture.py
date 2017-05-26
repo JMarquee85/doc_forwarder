@@ -8,11 +8,15 @@ import smtplib
 import dropbox
 from oauth2client.service_account import ServiceAccountCredentials
 from slacker import Slacker
+import get_reg as gr
 
 # EMAIL SECTION IMPORTS
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
+from email.mime.application import MIMEApplication
+from email.utils import formatdate
+from email.utils import make_msgid
 from email import encoders
 
 ### IMPORT PRIVATE CONFIG FILE
@@ -68,10 +72,12 @@ def email_pupculture():
 		admin_email = "joshmarcus85@gmail.com" # Admin email or other CC'd Email
 		
 		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server.ehlo()
 		server.starttls()
+		server.ehlo()
 		server.login(p_con.serv_email_address, p_con.serv_email_password)
 		msg = MIMEMultipart()
-		msg['Subject'] = "New Registration from " + pet_name.upper() + last_name.upper() + "!"
+		msg['Subject'] = "New Registration from " + pet_name.upper() + ' ' + last_name.upper() + "!"
 		msg['From'] = me
 		msg['To'] = you
 
@@ -90,12 +96,14 @@ def email_pupculture():
 		### Inserting file upload to Slack as a backup ###
 		# This slack upload is not working for some reason
 		#slack.files.upload(filename)
-	
+		
 		part = MIMEBase('application', 'octet-stream')
 		#part.set_payload(attachment)
 		part.set_payload((attachment).read())
 		encoders.encode_base64(part)
-		part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+		#part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+		part.add_header('Content-Disposition', "attachment; filename= %s" % os.path.basename(filename))
+
 		# Have noticed a bug here if there either is a 
 		# docuemnt already with the filename or already listed
 		# in the log files. It kills the program here if that condition
@@ -103,9 +111,6 @@ def email_pupculture():
 		
 		msg.attach(part)
 	
-		server = smtplib.SMTP('smtp.gmail.com', 587)
-		server.starttls()
-		server.login(me, p_con.serv_email_password)
 		text = msg.as_string()
 		server.sendmail(me, you, text)
 		server.quit()

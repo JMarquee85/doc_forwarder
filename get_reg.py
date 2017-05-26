@@ -7,6 +7,8 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 from mailmerge import MailMerge
+
+
 # from slackclient import SlackClient
 from slacker import Slacker
 
@@ -219,9 +221,15 @@ def get_reg():
 		document.write(last_name.upper() + ', ' + pet_name.upper() + '.docx')
 		os.chdir('..')
 				# Terminal Message to Confirm Success
-		new_reg_msg = "\nA registration form for " + pet_name.upper() + " " + last_name.upper() + " has been created!\t"
+		new_reg_msg = "\nA registration docx form for " + pet_name.upper() + " " + last_name.upper() + " has been created!\t"
 		print(new_reg_msg)
-		
+		'''
+		### Convert docx to pdf and store in folder called pdfs
+		# Call w2p here
+		file_to_convert = last_name.upper() + ', ' + pet_name.upper() + '.docx'
+		converted_pdf = last_name.upper() + ', ' + pet_name.upper() + '.pdf'
+		w2p.convx_to_pdf(file_to_convert, converted_pdf)
+		'''
 		### Post Slack Message to Update Channel
 		slack.chat.post_message(p_con.slack_channel, new_reg_msg)
 		
