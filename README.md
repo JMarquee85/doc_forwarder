@@ -2,7 +2,7 @@
 A very simple backend application to turn Google Form spreadsheet fields
 into docx files and email them. <br><br>
 
-Project written for http://register.pupculturenyc.com<br><br>
+Project written for http://register.pupculturenyc.com<br>
 
  Written by Josh Marcus <br>
  joshmarcus85@gmail.com <br>
@@ -19,11 +19,12 @@ Project written for http://register.pupculturenyc.com<br><br>
 #RUNNING IT
 
  Make sure you have all the required packages installed by running:
-	pip install -r requirements.txt
+	```pip install -r requirements.txt```
  Change directory to the project:
-    cd /path/to/directory
+    
+    ```cd /path/to/directory```
  Then start the program with the following command:
-    python main_loop.py    
+    ```python main_loop.py```
 
 #CONFIGURATION
  WARNING: DO NOT store the variables in this file publicly!!
@@ -41,7 +42,7 @@ Project written for http://register.pupculturenyc.com<br><br>
  Store the email password in serv_email password. (admin_email not currently used.)
 
 #STOPPING IT
-Simply type ctrl-c to quit the program.
+Simply type ```ctrl-c``` to quit the program.
 
 
 
