@@ -64,6 +64,7 @@ def email_pupculture():
 		
 		me = p_con.serv_email_address	# Sender
 		you = "joshmarcus85@gmail.com"  # Recipient
+		admin_email = "joshmarcus85@gmail.com" # Admin email or other CC'd Email
 		
 		server = smtplib.SMTP('smtp.gmail.com', 587)
 		server.starttls()
@@ -71,7 +72,7 @@ def email_pupculture():
 		msg = MIMEMultipart()
 		msg['Subject'] = "New Registration from " + pet_name.upper() + last_name.upper() + "!"
 		msg['From'] = me
-		msg['To'] = you
+		msg['To'] = you, admin_email
 
 		body = first_name.upper() + " " + last_name.upper() + " has registered their dog " + pet_name.upper() + " with pupculture!\n\n Please Note: uploaded customer vaccinations and dog images are uploaded to the Dropbox at http://pupculturenyc.com/upload"
 	
@@ -107,6 +108,10 @@ def email_pupculture():
 		text = msg.as_string()
 		server.sendmail(me, you, text)
 		server.quit()
+		
+		# Change directory back to program root dir
+		os.chdir('..')
+		
 		# Log the email to a text or csv file
 		# If in file, don't print message or send email	
 		
