@@ -60,7 +60,7 @@ def email_pupculture():
 			last_name.upper() + " to info@pupculturenyc.com.")
 		### Post Status Message to Slack Channel ###
 		new_email_slack_msg = ('\nA new registation document for ' + pet_name.upper() + ' ' + last_name.upper() + ' has been emailed!')
-		slack.chat.post_message('#pcforwarder_messages', new_email_slack_msg)
+		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 		
 		me = p_con.serv_email_address	# Sender
 		you = "joshmarcus85@gmail.com"  # Recipient
@@ -69,7 +69,7 @@ def email_pupculture():
 		server.starttls()
 		server.login(p_con.serv_email_address, p_con.serv_email_password)
 		msg = MIMEMultipart()
-		msg['Subject'] = "New Registration from " + pet_name.upper() + "!"
+		msg['Subject'] = "New Registration from " + pet_name.upper() + last_name.upper() + "!"
 		msg['From'] = me
 		msg['To'] = you
 
@@ -80,15 +80,18 @@ def email_pupculture():
 		### Attach completed customer file ###
 		
 		filename = os.path.join(this_dir, "submitted_customer_files/" + last_name.upper() + ', ' + pet_name.upper() + ".docx")
-		#attachment = open(os.path.join(this_dir, "submitted_customer_files/" + last_name.upper() + ', ' + pet_name.upper() + ".docx", "r")
-		attachment = filename
+		os.chdir('submitted_customer_files')
+		cust_filename = open(last_name.upper() + ', ' + pet_name.upper() + ".docx", "rb")
+		attachment = cust_filename
+		#attachment = open(this_dir + "submitted_customer_files/" + last_name.upper() + ', ' + pet_name.upper() + ".docx", "rb")
 	
 		### Inserting file upload to Slack as a backup ###
-		slack.files.upload(filename)
+		# This slack upload is not working for some reason
+		#slack.files.upload(filename)
 	
 		part = MIMEBase('application', 'octet-stream')
-		part.set_payload(attachment)
-		#part.set_payload((attachment).read())
+		#part.set_payload(attachment)
+		part.set_payload((attachment).read())
 		encoders.encode_base64(part)
 		part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
 		# Have noticed a bug here if there either is a 

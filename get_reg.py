@@ -140,7 +140,7 @@ def get_reg():
 	# Receives another email address here for some reason. 
 	email_again = worksheet.acell('BG2').value
 	
-	print("\nChecking database for: \n\t" + pet_name.upper() + " " + last_name.upper() + "\n\tOwner: " +
+	print("\nChecking database for last detected registration: \n\t" + pet_name.upper() + " " + last_name.upper() + "\n\tOwner: " +
 				"\t" + last_name.upper() + ", " + first_name.upper())
 
 	##### THIS FUNCTION CHECKS IF CUSTOMER HAS ALREADY SUBMITTED 

@@ -38,7 +38,7 @@ from requests.exceptions import ConnectionError
 print("\n\n\t-- Welcome to the pupculture Registration Forwarder --\n")
 print("\t -- Written by Josh Marcus - joshmarcus85@gmail.com --\n")
 print("This program creates pupculture registration forms by " +
-		"pulling data from the Google Form available at register.pupculturenyc.com and emails these forms to info@pupculturenyc.com.\n\nSee the code at https://github.com/JMarquee85/pc_doc_forwarder\n")
+		"pulling data from the Google Form available at register.pupculturenyc.com and emails these forms to info@pupculturenyc.com.\n\nSee the code at https://github.com/JMarquee85/doc_forwarder\n")
 
 ##### Fix this later ... Internet connection check at the beginning of 
 ##### the program ...
@@ -100,7 +100,7 @@ this_host_hostname = socket.gethostname()
 this_host_ip  = re.search('"([0-9]*])"', urllib.urlopen("http://ip.jsontest.com/").read())
 
 # Post login log to Slack channel
-slack_launch_msg = ('\n\n** PC_DOC_FORWARDER **\n** Launch Detected: ** \n' + str(now) + '\nHostname:\t' + this_host_hostname
+slack_launch_msg = ('\n** LAUNCH DETECTED ** \n' + str(now) + '\nHostname:\t' + this_host_hostname
 						+ '\nIP Address: \t' + str(this_host_ip))
 slack.chat.post_message(p_con.slack_channel, slack_launch_msg)
 
@@ -155,6 +155,8 @@ while True:
 	except ConnectionError:
 		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
 		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
+	'''
 	except NewConnectionError:
 		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
 		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
+	'''
