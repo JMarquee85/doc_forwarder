@@ -79,7 +79,7 @@ def email_pupculture():
 		msg['Subject'] = "New Registration from " + pet_name.upper() + ' ' + last_name.upper() + "!"
 		msg['From'] = me
 		msg['To'] = you
-
+ 
 		body = first_name.upper() + " " + last_name.upper() + " has registered their dog " + pet_name.upper() + " with pupculture!\n\n Please Note: uploaded customer vaccinations and dog images are uploaded to the Dropbox at http://pupculturenyc.com/upload"
 	
 		msg.attach(MIMEText(body, 'plain'))

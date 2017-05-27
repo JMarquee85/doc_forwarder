@@ -149,7 +149,7 @@ def get_reg():
 	test_strings = (last_name, first_name, pet_name)
 	
 	### There's an issue here ... Need to create a list to check against
-	### for recent applications 
+	### for recent applications  
 	
 	if last_name.upper() and first_name.upper() and pet_name.upper() in open('inputlog.txt').read():
 	#if any(s in line for s in test_strings):
