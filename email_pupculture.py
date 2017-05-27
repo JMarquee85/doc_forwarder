@@ -68,7 +68,7 @@ def email_pupculture():
 		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 		
 		me = p_con.serv_email_address	# Sender
-		you = "joshmarcus85@gmail.com"  # Recipient
+		you = p_con.recipient_email  # Recipient
 		admin_email = "joshmarcus85@gmail.com" # Admin email or other CC'd Email
 		
 		server = smtplib.SMTP('smtp.gmail.com', 587)
