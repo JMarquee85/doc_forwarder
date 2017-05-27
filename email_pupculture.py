@@ -62,16 +62,15 @@ def email_pupculture():
 		pass
 	else:
 		print("\nEmailing a registration document from " + pet_name.upper() + " " + 
-			last_name.upper() + " to info@pupculturenyc.com.")
+			last_name.upper() + " to " + p_con.recipient_email + "!")
 		### Post Status Message to Slack Channel ###
 		new_email_slack_msg = ('\nA new registation document for ' + pet_name.upper() + ' ' + last_name.upper() + ' has been emailed!')
 		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 		
 		me = p_con.serv_email_address	# Sender
-		you = "joshmarcus85@gmail.com"  # Recipient
-		admin_email = "joshmarcus85@gmail.com" # Admin email or other CC'd Email
+		you = p_con.recipient_email  # Recipient
 		
-		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server = smtplib.SMTP(p_con.smtp_server, p_con.smtp_port)
 		server.ehlo()
 		server.starttls()
 		server.ehlo()
@@ -146,3 +145,4 @@ def email_pupculture():
 		print metadata
 		'''
 		return
+
