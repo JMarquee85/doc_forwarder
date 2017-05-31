@@ -67,7 +67,7 @@ import private_config as p_con
 ### Email PupCulture Function
 import email_pupculture as e_pc
 ### Get Registration Function
-from get_reg import get_reg
+import get_reg as gr
 
 import gspread
 import json
@@ -141,8 +141,10 @@ template = os.path.join(this_dir, 'pcregtemplate.docx')
 
 while True:
 	try:
-		get_reg()
-		#email_pupculture() # Now called immediately at the end of get_reg()
+		gr.get_reg()
+		gr.check_for_file()
+		#gr.create_docx()
+		e_pc.email_pupculture()
 		#registration_email()
 	except KeyboardInterrupt:
 		print("\nOK! Exiting program!\n") 
