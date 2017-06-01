@@ -21,7 +21,9 @@ import private_config as p_con
 ### Email PupCulture Function
 import email_pupculture as e_pc
 ### Get Registration Function
-from get_reg import get_reg
+import get_reg as gr
+import email_it as e_it
+import create_docx as c_doc
 
 import gspread
 import json
@@ -69,6 +71,10 @@ print("Google sheet successfully opened!")
 # Template File
 template = os.path.join(this_dir, 'pcregtemplate.docx')
 
+global last_name
+global first_name
+global pet_name
+
 #####  THE FUNCTION #####
 ###
 #
@@ -81,13 +87,13 @@ def reprint_row(row_select):
 		return
 	else:
 		print("\nImporting customer information from Row " + 
-				str(str(row_select)) + "...")
+				str(row_select) + "...")
 		# Input rowselect number to call particular row
-		time_registered = worksheet.acell('A' + str(str(row_select))).value
-		last_name = worksheet.acell('B' + str(str(row_select))).value
-		first_name = worksheet.acell('C' + str(str(row_select))).value
+		time_registered = worksheet.acell('A' + str(row_select)).value
+		last_name = worksheet.acell('B' + str(row_select)).value
+		first_name = worksheet.acell('C' + str(row_select)).value
 		street = worksheet.acell('D' + str(row_select)).value
-		apt = worksheet.acell('E' + str(str(row_select))).value
+		apt = worksheet.acell('E' + str(row_select)).value
 		cross_streets = worksheet.acell('F' + str(row_select)).value
 		city = worksheet.acell('G' + str(row_select)).value
 		state = worksheet.acell('H' + str(row_select)).value
@@ -178,16 +184,12 @@ def reprint_row(row_select):
 		
 		# Variables changed to selected row. 
 		# Printing confirmation message. 
-		print("Creating docx file for "  + last_name.upper() + " " +
-					pet_name.upper() + "...")
-		# Create docx file			
-					
-		print("\nEmailing docx file!\n")
-		# Email file to pupculture
-		e_it.email_it()	
+		print("Creating docx file for "  + pet_name.upper().strip() + " " +
+					last_name.upper().strip() + "...")
 		
-		return
-
+		
+		
+		
 
 ##### DO THE BIT! #####
 
@@ -197,6 +199,13 @@ while True:
 		# Accepts user input by row number
 		row_select = input("Please input the row number you would like to reprint and resend ... \n\t")
 		reprint_row(int(row_select))
+		# Create docx file			
+		c_doc.create_docx(row_select)
+		print("\nFile created!")
+		##### EMAILING DOCX FILE
+		print("\nEmailing docx file!\n")
+		# Email file to pupculture
+		e_it.email_it(row_select)	
 	except KeyboardInterrupt:
 		print("\nOK! Exiting program!")
 		break

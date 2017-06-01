@@ -144,7 +144,11 @@ def get_reg():
 
 
 ##### CHECK TO SEE IF CUSTOMER FILE HAS ALREADY BEEN LOGGED #####
-def check_for_file():	
+def check_for_file():
+	last_name = worksheet.acell('B2').value
+	first_name = worksheet.acell('C2').value
+	pet_name = worksheet.acell('R2').value
+
 	print("\nChecking database for last detected registration: \n\t" + pet_name.upper() + " " + last_name.upper() + "\n\tOwner: " +
 				"\t" + last_name.upper() + ", " + first_name.upper())
 
@@ -161,6 +165,10 @@ def check_for_file():
 
 ##### CREATE DOCX FILE #####
 def create_docx():
+	last_name = worksheet.acell('B2').value
+	first_name = worksheet.acell('C2').value
+	pet_name = worksheet.acell('R2').value
+	
 	print("\nCreating customer document for " + pet_name.upper() + 
 			" " + last_name.upper() + " ...")
 	document.merge(

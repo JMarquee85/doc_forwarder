@@ -40,19 +40,6 @@ print("\t -- Written by Josh Marcus - joshmarcus85@gmail.com --\n")
 print("This program creates pupculture registration forms by " +
 		"pulling data from the Google Form available at register.pupculturenyc.com and emails these forms to info@pupculturenyc.com.\n\nSee the code at https://github.com/JMarquee85/doc_forwarder\n")
 
-##### Fix this later ... Internet connection check at the beginning of 
-##### the program ...
-'''
-### CHECKING INTERNET CONNECTION
-print("Checking for internet connection ... ")
-def is_connected():
-	try:
-		r = requests.get("http://google.com", timeout =0.001)
-	except ConnectionError as e:
-		print(e)
-		r = "Unable to connect ..." 
-print ("Connected!")
-'''
 
 ##### MAIN IMPORT STATEMENTS #####
 from mailmerge import MailMerge
