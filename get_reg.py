@@ -218,7 +218,7 @@ def get_reg():
 			# First, change directory to submitted_customer_files
 		print("Writing new customer file ...")
 		os.chdir('submitted_customer_files')
-		document.write(last_name.title().strip() + ', ' + pet_name.title().strip() + '.docx')
+		document.write(last_name.title().strip() + '_' + pet_name.title().strip() + '.docx')
 		os.chdir('..')
 				# Terminal Message to Confirm Success
 		new_reg_msg = "\nA registration docx form for " + pet_name.title().strip() + " " + last_name.title().strip() + " has been created!\t"

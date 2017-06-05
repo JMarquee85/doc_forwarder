@@ -97,11 +97,10 @@ today_date = now.strftime("%m/%d/%Y %I:%M")
 # Hostname of current computer:
 this_host_hostname = socket.gethostname()
 # IP Address of current computer:
-this_host_ip  = re.search('"([0-9]*])"', urllib.urlopen("http://ip.jsontest.com/").read())
+#this_host_ip  = re.search('"([0-9]*])"', urllib.urlopen("http://ip.jsontest.com/").read())
 
 # Post login log to Slack channel
-slack_launch_msg = ('\n** LAUNCH DETECTED ** \n' + str(now) + '\nHostname:\t' + this_host_hostname
-						+ '\nIP Address: \t' + str(this_host_ip))
+slack_launch_msg = ('\n** LAUNCH DETECTED ** \n' + str(now) + '\nHostname:\t' + this_host_hostname)
 slack.chat.post_message(p_con.slack_channel, slack_launch_msg)
 
 
