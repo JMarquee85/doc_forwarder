@@ -10,17 +10,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 from slacker import Slacker
 import get_reg as gr
 
-# EMAIL SECTION IMPORTS
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEBase import MIMEBase
-from email.mime.application import MIMEApplication
-from email.utils import formatdate
-from email.utils import make_msgid
-from email import encoders
+import yagmail
 
 ### IMPORT PRIVATE CONFIG FILE
 import private_config as p_con
+import create_docx as c_doc
 
 from datetime import datetime
 
@@ -52,76 +46,54 @@ def email_pupculture():
 	
 	print("\nEMAIL CUSTOMER REGISTRATION:")
 	print("\nChecking to see if we have documents for " + 
-				pet_name.upper() + " " + last_name.upper() +
+				pet_name.title().strip() + " " + last_name.title().strip() +
 				" already sent ...")	
 	
 	mail_log = open('maillog.txt', 'r')
 	
-	if last_name.upper() and pet_name.upper() in mail_log.read():
+	if last_name.title().strip() and pet_name.title().strip() in mail_log.read():
 		print("\nThis customer's documents have already been emailed to pupculture! Moving on ... \n")
 		pass
 	else:
-		print("\nEmailing a registration document from " + pet_name.upper() + " " + 
-			last_name.upper() + " to " + p_con.recipient_email + "!")
+		print("\nEmailing a registration document from " + pet_name.title().strip() + " " + 
+			last_name.title().strip() + " to " + p_con.recipient_email + "!")
 		### Post Status Message to Slack Channel ###
-		new_email_slack_msg = ('\nA new registation document for ' + pet_name.upper() + ' ' + last_name.upper() + ' has been emailed!')
+		new_email_slack_msg = ('\nA new registation document for ' + pet_name.title().strip() + ' ' + last_name.title().strip() + ' has been emailed!')
 		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 		
-		me = p_con.serv_email_address	# Sender
-		you = p_con.recipient_email  # Recipient
-		
-		server = smtplib.SMTP(p_con.smtp_server, p_con.smtp_port)
-		server.ehlo()
-		server.starttls()
-		server.ehlo()
-		server.login(p_con.serv_email_address, p_con.serv_email_password)
-		msg = MIMEMultipart()
-		msg['Subject'] = "New Registration from " + pet_name.upper() + ' ' + last_name.upper() + "!"
-		msg['From'] = me
-		msg['To'] = you
-
-		body = first_name.upper() + " " + last_name.upper() + " has registered their dog " + pet_name.upper() + " with pupculture!\n\n Please Note: uploaded customer vaccinations and dog images are uploaded to the Dropbox at http://pupculturenyc.com/upload"
+		# Initialize yagmail as yag
+		yag = yagmail.SMTP(p_con.serv_email_address, p_con.serv_email_password)
 	
-		msg.attach(MIMEText(body, 'plain'))
-	
-		### Attach completed customer file ###
+		last_name = c_doc.worksheet.acell('B2').value.strip()
+		first_name = c_doc.worksheet.acell('C2').value.strip()
+		pet_name = c_doc.worksheet.acell('R2').value.strip()
+		banner_img = 'pcemailbanner.png'
+		filename = os.path.join(this_dir, "submitted_customer_files/" + last_name.title().strip() + '_' + pet_name.title().strip() + ".docx")
 		
-		filename = os.path.join(this_dir, "submitted_customer_files/" + last_name.upper() + ', ' + pet_name.upper() + ".docx")
-		os.chdir('submitted_customer_files')
-		cust_filename = open(last_name.upper() + ', ' + pet_name.upper() + ".docx", "rb")
-		attachment = cust_filename
-		#attachment = open(this_dir + "submitted_customer_files/" + last_name.upper() + ', ' + pet_name.upper() + ".docx", "rb")
+		### SEND THE EMAIL
+		subject = ("New Registration from " + pet_name.title().strip() + ' ' + last_name.title().strip() + "!")
+		contents = [banner_img, first_name.title().strip() + " " + last_name.title().strip() + " has registered their dog " + pet_name.title().strip() + " with pupculture!\nThe registration form is attached to this email. \n\nIf the customer uploaded vaccination files or images, they are available in the Dropbox folder Customer Uploads. If they still need to upload these documents, they should visit pupculturenyc.com/upload.\n\n\n\nIf there is an issue with this application, please contact joshmarcus85@gmail.com\n\n", filename]
+		yag.send(p_con.recipient_email, subject, contents)
+	
+		
+		### Post Status Message to Slack Channel ###
+		new_email_slack_msg = ('\nA new registration document for ' + pet_name.title() + ' ' + last_name.title() + ' has been emailed!')
+		c_doc.slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
+	
 	
 		### Inserting file upload to Slack as a backup ###
 		# This slack upload is not working for some reason
 		#slack.files.upload(filename)
 		
-		part = MIMEBase('application', 'octet-stream')
-		#part.set_payload(attachment)
-		part.set_payload((attachment).read())
-		encoders.encode_base64(part)
-		#part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
-		part.add_header('Content-Disposition', "attachment; filename= %s" % os.path.basename(filename))
-
-		# Have noticed a bug here if there either is a 
-		# docuemnt already with the filename or already listed
-		# in the log files. It kills the program here if that condition
-		# is happening. 
-		
-		msg.attach(part)
-	
-		text = msg.as_string()
-		server.sendmail(me, you, text)
-		server.quit()
-		
+				
 		# Change directory back to program root dir
-		os.chdir('..')
+		#os.chdir('..')
 		
 		# Log the email to a text or csv file
 		# If in file, don't print message or send email	
 		
 		with open('maillog.txt', 'a') as mail_log:
-			mail_log.write(last_name.upper() + ', ' + pet_name.upper() + ': ' + str(today_date) + "\n")
+			mail_log.write(last_name.title().strip() + ', ' + pet_name.title().strip() + ': ' + str(today_date) + "\n")
 		
 		'''
 		##### Saving to Dropbox #####
@@ -132,14 +104,14 @@ def email_pupculture():
 		os.chdir('submitted_customer_files')
 				
 		f = open(cust_filename, 'rb')
-		response = client.put_file(('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx"), 'f') 
+		response = client.put_file(('/' + last_name.title().strip() + ', ' + pet_name.title().strip() + ".docx"), 'f') 
 		print 'uploaded ', response
 		
 		folder_metadata = client.metadata('/')
 		print 'metadata: ', folder_metadata
 		
-		f, metadata = client.get_file_and_metadata('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx")
-		out = open('/' + last_name.upper() + ', ' + pet_name.upper() + ".docx", 'wb')
+		f, metadata = client.get_file_and_metadata('/' + last_name.title().strip() + ', ' + pet_name.title().strip() + ".docx")
+		out = open('/' + last_name.title().strip() + ', ' + pet_name.title().strip() + ".docx", 'wb')
 		out.write(f.read())
 		out.close()
 		print metadata
