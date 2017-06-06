@@ -69,6 +69,8 @@ import email_pupculture as e_pc
 ### Get Registration Function
 from get_reg import get_reg
 
+
+
 import gspread
 import json
 import sys

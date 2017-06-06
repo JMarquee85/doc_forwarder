@@ -13,12 +13,19 @@ from datetime import datetime
 from slacker import Slacker
 slack = Slacker(p_con.private_slack_token)
 
+# Creating relative path directory
+this_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Create a mailmerge document
+# docx Template File (pc Registration Form with MailMerge Fields)
+template = os.path.join(this_dir, 'pcregtemplate.docx')
+document = MailMerge(template)
+
 # Pulling Today's Date
 now = datetime.now()
 today_date = now.strftime("%m/%d/%Y %I:%M")
 
-# Creating relative path directory
-this_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 # JSON Credentials and Scope 
 ##### JSON Key #####
@@ -51,7 +58,10 @@ template = os.path.join(this_dir, 'pcregtemplate.docx')
 ##### CREATE DOC #####
 def create_docx(row_number):
 
-		
+	last_name = worksheet.acell('B' + str(row_number)).value
+	first_name = worksheet.acell('C' + str(row_number)).value
+	pet_name = worksheet.acell('R' + str(row_number)).value
+	
 	#### CREATE THE DOCUMENT #####
 
 	print("\nCreating customer document for " + pet_name.title().strip() + 

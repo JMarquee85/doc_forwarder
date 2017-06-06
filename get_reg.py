@@ -14,6 +14,7 @@ from slacker import Slacker
 
 import private_config as p_con
 import email_pupculture as e_pc
+import first_ten as ft
 ##### SLACK TOKEN #####
 slack = Slacker(p_con.private_slack_token)
 
@@ -39,6 +40,8 @@ def get_reg():
 	template = os.path.join(this_dir, 'pcregtemplate.docx')
 	# Create a mailmerge document
 	document = MailMerge(template)	
+	
+	ft.first_ten()
 	
 	print("\n\nSCANNING REGISTRATION DATABASE FOR NEW APPLICATIONS ...\n\t\t(ctrl-c to quit)")
 	reg = gc.open_by_url('https://docs.google.com/spreadsheets/d/1dYO0M9iBWVmOYcE8fO9t9rzIaTijrbLQBCNYbulAuF4/edit#gid=136975089')

@@ -54,6 +54,7 @@ while True:
 					str(row_select) + "...")
 			ig.import_gsheet_by_row(row_select)
 			#d.db_upload(row_select)
+			c_doc.create_docx(row_select)
 			e_it.email_it(row_select)				
 	except KeyboardInterrupt:
 		print("\nOK! Exiting program!")
@@ -65,8 +66,8 @@ while True:
 		print("\n\tThat didn't seem to work! Try again.\n")
 	except IOError:
 		print("\nFile writing error! Please make sure that you input a value of 2 or higher ...")
-	except NameError:
-		print("\n\tUhhhhh.... what?! Let's try that again.")
+	#except NameError:
+	#	print("\n\tUhhhhh.... what?! Let's try that again.")
 	
 
 	
