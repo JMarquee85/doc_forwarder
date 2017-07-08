@@ -25,11 +25,6 @@
 # 10. Or create separate function to call a column number or do full
 #		database scan to compare logs and entire gspread doc
  
-
-##### ISSUES LIST #####
-# 1. Pulls previous registrant's information on new applications.
-#		Reassignment of gspread variables at the wrong time?
-
 from __future__ import print_function
 from requests.exceptions import ConnectionError
 
@@ -52,9 +47,13 @@ print("\nImporting packages ... This may take a minute or so ...")
 ### Private configuration file
 import private_config as p_con
 ### Email PupCulture Function
-import email_pupculture as e_pc
+#import email_pupculture as e_pc
 ### Get Registration Function
 import get_reg as gr
+### Reprint Row Function
+import reprint_row as rr
+###
+import email_it as e_it
 
 import gspread
 import json
@@ -126,27 +125,67 @@ template = os.path.join(this_dir, 'pcregtemplate.docx')
 
 #### Do the Bit! ####
 
-while True:
+while True:	
 	try:
-		#gr.get_reg()
-		gr.check_top_twenty()
-		#gr.check_for_file()
-		#gr.create_docx()
-		#e_pc.email_pupculture()
-		#registration_email()
+		# Would like to start the loop automatically and 
+		# interrupt it with a keypress.
+		#gr.check_top_twenty()
+		print('\n\n\nPUPCULTURE REGISTRATION MAIN MENU:\nPlease input a number ...')
+		user_selection = input('\n\t1. Run the loop to check for new registrations\t' +
+								'\n\t2. Change the number of registrations scanned (default 20)\t' +
+								'\n\t3. Manually resend a registration (by Google Sheet row number)\t'
+								'\n\t4. Clear input log and mail log\t' +
+								'\n\t5. Clear all registration documents from local folder\t'+
+								'\n\t6. Exit the program\t')
+		
+		if user_selection == 1:
+			#gr.get_reg()
+			gr.check_top_twenty()
+			#gr.check_for_file()
+			#gr.create_docx()
+			#e_pc.email_pupculture()
+			#registration_email()
+		elif user_selection == 2:
+		### Change number of registrations scanned ###
+			print("\nThis feature is coming soon!")
+			pass
+		elif user_selection == 3:
+		### Manually resend a registration form by number ###
+		### missed_one.py
+			rr.reprint_row()
+		elif user_selection == 4:
+		### Clear logs (Use carefully, as this may cause the loop to resend a bunch of emails.)
+			print("\n\n*****WARNING*****\nClearing the logs may cause the program to resend a large number of emails.")
+			clear_logs_query = raw_input('\nAre you sure you want to clear the log files? (y or n)\n\t')
+			if clear_logs_query == 'y':
+				open('inputlog.txt', 'w').close()
+				open('maillog.txt', 'w').close()
+				print('\n\nLogs cleared!')
+			elif clear_logs_query == 'n':
+				print('\n\nOk, not clearing logs. Your email inbox thanks you.')
+			else:
+				print('\n\nSorry, I\'m not quite sure what you meant there. Please try again.')
+		elif user_selection == 5:
+			### Clear all word files from folder
+			print("This option is coming soon!")
+		elif user_selection == 6:
+			print("\nOk! Exiting program!")
+			break
+		else:
+			print("\nSorry ... not quite sure what you meant there. Try again!")
+
+		
 	except KeyboardInterrupt:
-		print("\nOK! Exiting program!\n") 
+		print("\n\nLoading main menu ...\n") 
 		### POST SLACK MESSAGE TO INFORM PROGRAM HALTED
-		slack.chat.post_message(p_con.slack_channel, '\nThe program has been exited by keyboard entry!')
-		break
+		#slack.chat.post_message(p_con.slack_channel, '\nThe program has been exited by keyboard entry!')
+	#except NameError:
+	#	print("\nSorry... not quite sure what you meant there. Try again, please.")
+	#except SyntaxError:
+	#	print("\nSorry... not quite sure what you meant there. Try again, please.")
 	except IOError:
 		print("\nCreated customer not found in submitted_customer_documents directory! Trying again!")
 		continue
 	except ConnectionError:
 		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
 		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
-	'''
-	except NewConnectionError:
-		print("\nUnable to connect! Please ensure you are connected to the internet! \nTrying again!")
-		slack.chat.post_message(p_con.slack_channel, 'Connection lost! Attempting to reconnect ... ')
-	'''

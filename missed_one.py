@@ -43,7 +43,6 @@ while True:
 	# User inputs number to select row to reprint
 	try:
 		# Accepts user input by row number
-		print("\n\n\n\n\t\t***** PUPCULTURE REGISTRATION FORWARDER *****")
 		print("\n\t\t--Manual Reprint by Google Sheet Row Number--")
 		row_select = input("\nINPUT ROW NUMBER ... (2 or higher) \n\t")
 		if int(row_select) <= 1:

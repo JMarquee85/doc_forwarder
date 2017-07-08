@@ -22,8 +22,9 @@ today_date = now.strftime("%m/%d/%Y %I:%M")
 from slacker import Slacker
 
 import private_config as p_con
-import email_pupculture as e_pc
+#import email_pupculture as e_pc
 import import_gsheet_by_row as ig
+#from email_it import *
 import email_it as e_it
 ##### SLACK TOKEN #####
 slack = Slacker(p_con.private_slack_token)
@@ -53,6 +54,7 @@ document = MailMerge(template)
 
 ##### CHECK TO SEE IF CUSTOMER FILE HAS ALREADY BEEN LOGGED #####
 def check_for_file(row_number):
+	import email_it as e_it
 	
 	last_name = worksheet.acell('B' + str(row_number)).value.strip()
 	first_name = worksheet.acell('C' + str(row_number)).value.strip()
@@ -64,8 +66,7 @@ def check_for_file(row_number):
 		return
 	# Need to make sure fields are not blank
 	elif not pet_name and not last_name and not first_name:
-		print("\n Aww man... looks like some of the fields are blank. I'm going to move on.")
-		
+		print("\n Aww man... looks like some of the fields are blank. I'm going to move on.")	
 	else:
 		ig.import_gsheet_by_row(row_number)
 		create_docx(row_number)
@@ -75,8 +76,9 @@ def check_for_file(row_number):
 ##### This for loop checks the top twenty entries
 ##### to see if they have already registered. 		
 def check_top_twenty():
+	print("\n\nREGISTRATION LOOP STARTED!")
 	for x in range(1,21):
-		print("\n\nCHECKING IF ENTRY " + str(x) + " has registered ...\n\t\t(ctrl-c to quit)")
+		print("\nCHECKING IF ENTRY " + str(x) + " has registered ...\n\t\t(ctrl-c to return to main menu)")
 		ig.import_gsheet_by_row(x)
 		check_for_file(x)
 
@@ -176,11 +178,6 @@ def create_docx(row_number):
 	terms_agreement = worksheet.acell('BF' + str(row_number)).value.strip()
 	# Receives another email address here for some reason. 
 	email_again = worksheet.acell('BG' + str(row_number)).value.strip()
-
-	
-	#last_name = worksheet.acell('B' + str(row_number)).value.strip()
-	#first_name = worksheet.acell('C' + str(row_number)).value.strip()
-	#pet_name = worksheet.acell('R' + str(row_number)).value.strip()
 	
 	print("\nCreating customer document for " + pet_name.title().strip() + 
 			" " + last_name.title().strip() + " ...")
@@ -244,7 +241,7 @@ def create_docx(row_number):
 		# First, change directory to submitted_customer_files
 	print("Writing new customer file ...")
 	os.chdir('submitted_customer_files')
-	document.write(last_name.title().strip() + '_' + pet_name.title().strip() + '.docx')
+	document.write(last_name.title().strip() + ', ' + pet_name.title().strip() + '.docx')
 	os.chdir('..')
 	# Terminal Message to Confirm Success
 	new_reg_msg = "\nA registration docx form for " + pet_name.title().strip() + " " + last_name.title().strip() + " has been created!\t"

@@ -62,13 +62,13 @@ def email_pupculture():
 		pass
 	else:
 		print("\nEmailing a registration document from " + pet_name.upper() + " " + 
-			last_name.upper() + " to " + p_con.recipient_email + "!")
+			last_name.upper() + " to " + p_con.recipient_emails + "!")
 		### Post Status Message to Slack Channel ###
 		new_email_slack_msg = ('\nA new registation document for ' + pet_name.upper() + ' ' + last_name.upper() + ' has been emailed!')
 		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 		
 		me = p_con.serv_email_address	# Sender
-		you = p_con.recipient_email  # Recipient
+		you = p_con.recipient_emails  # Recipient
 		
 		server = smtplib.SMTP(p_con.smtp_server, p_con.smtp_port)
 		server.ehlo()
