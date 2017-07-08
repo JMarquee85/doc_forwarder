@@ -128,8 +128,9 @@ template = os.path.join(this_dir, 'pcregtemplate.docx')
 
 while True:
 	try:
-		gr.get_reg()
-		gr.check_for_file()
+		#gr.get_reg()
+		gr.check_top_twenty()
+		#gr.check_for_file()
 		#gr.create_docx()
 		e_pc.email_pupculture()
 		#registration_email()

@@ -9,12 +9,19 @@ import gspread
 import smtplib
 import dropbox
 from slacker import Slacker
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Creating relative path directory
+this_dir = os.path.dirname(os.path.abspath(__file__))
+
+##### JSON Key #####
+json_key = os.path.join(this_dir, 'pcregisterpdfforwarder-1f39ce9a4ac0.json')
 
 ### IMPORT PRIVATE CONFIG FILE
 import private_config as p_con
 
-## Circular imports here, I realize ...
-import create_docx as c_doc
+##### SLACK TOKEN #####
+slack = Slacker(p_con.private_slack_token)
 
 from datetime import datetime
 
@@ -40,20 +47,25 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 #json_key = os.path.join(this_dir, 'pcregisterpdfforwarder-1f39ce9a4ac0.json')
 
 def email_it(row_number):
+	scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+	credentials = ServiceAccountCredentials.from_json_keyfile_name(json_key, scope)
+	gc = gspread.authorize(credentials)
+	reg = gc.open_by_url('https://docs.google.com/spreadsheets/d/1dYO0M9iBWVmOYcE8fO9t9rzIaTijrbLQBCNYbulAuF4/edit#gid=136975089')
+	global worksheet
+	worksheet = reg.get_worksheet(0)
 
 	# Initialize yagmail as yag
 	yag = yagmail.SMTP(p_con.serv_email_address, p_con.serv_email_password)
 	
-	last_name = c_doc.worksheet.acell('B' + str(row_number)).value.strip()
-	first_name = c_doc.worksheet.acell('C' + str(row_number)).value.strip()
-	pet_name = c_doc.worksheet.acell('R' + str(row_number)).value.strip()
-	banner_img = 'pcemailbanner.png'
+	last_name = worksheet.acell('B' + str(row_number)).value.strip()
+	first_name = worksheet.acell('C' + str(row_number)).value.strip()
+	pet_name = worksheet.acell('R' + str(row_number)).value.strip()
+	
 	filename = os.path.join(this_dir, "submitted_customer_files/" + last_name.title().strip() + '_' + pet_name.title().strip() + ".docx")
-	
-	
+		
 	### SEND THE EMAIL
 	subject = ("New Registration from " + pet_name.title().strip() + ' ' + last_name.title().strip() + "!")
-	contents = [banner_img, first_name.title().strip() + " " + last_name.title().strip() + " has registered their dog " + pet_name.title().strip() + " with pupculture!\nThe registration form is attached to this email. \n\nIf the customer uploaded vaccination files or images, they are available in the Dropbox folder Customer Uploads. If they still need to upload these documents, they should visit pupculturenyc.com/upload.\n\n\n\nIf there is an issue with this application, please contact joshmarcus85@gmail.com\n\n", filename]
+	contents = [first_name.title().strip() + " " + last_name.title().strip() + " has registered their dog " + pet_name.title().strip() + " with pupculture!\nThe registration form is attached to this email. \n\nIf the customer uploaded vaccination files or images, they are available in the Dropbox folder Customer Uploads. If they still need to upload these documents, they should visit pupculturenyc.com/upload.\n\n\n\nIf there is an issue with this application, please contact joshmarcus85@gmail.com\n\n", filename]
 	yag.send(p_con.recipient_email, subject, contents)
 	
 	### MESSAGE TO ANNOUNCE EMAILING DOCUMENT
@@ -61,13 +73,9 @@ def email_it(row_number):
 			last_name.title() + " to " + p_con.recipient_email + "!")
 		### Post Status Message to Slack Channel ###
 	new_email_slack_msg = ('\nA new registration document for ' + pet_name.title() + ' ' + last_name.title() + ' has been emailed!')
-	c_doc.slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
+	slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
 	
-	################
-	# Skipping the log check, as this function is for manual 
-	# reprints
-	'''
-	print("\nEMAIL CUSTOMER REGISTRATION:")
+	
 	print("\nChecking to see if we have documents for " + 
 				pet_name.title() + " " + last_name.title() +
 				" already sent ...")	
@@ -83,14 +91,9 @@ def email_it(row_number):
 		### Post Status Message to Slack Channel ###
 		new_email_slack_msg = ('\nA new registation document for ' + pet_name.title() + ' ' + last_name.title() + ' has been emailed!')
 		slack.chat.post_message(p_con.slack_channel, new_email_slack_msg)
-	'''	
-	#################
-	
-	
-	#############################################
-	
-	'''
-	##### Saving to Dropbox #####
+		return
+'''	
+	#### Saving to Dropbox #####
 	print("\nSaving file to Dropbox ... ")
 	client = dropbox.client.DropboxClient(p_con.db_app_token)
 	print 'linked account: ', client.account_info()
@@ -110,5 +113,5 @@ def email_it(row_number):
 	out.close()
 	print metadata
 	'''
-	return
+
 
