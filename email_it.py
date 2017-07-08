@@ -62,10 +62,11 @@ def email_it(row_number):
 	pet_name = worksheet.acell('R' + str(row_number)).value.strip()
 	
 	filename = os.path.join(this_dir, "submitted_customer_files/" + last_name.title().strip() + '_' + pet_name.title().strip() + ".docx")
-		
+	banner_img = 'pcemailbanner.png'
+	
 	### SEND THE EMAIL
 	subject = ("New Registration from " + pet_name.title().strip() + ' ' + last_name.title().strip() + "!")
-	contents = [first_name.title().strip() + " " + last_name.title().strip() + " has registered their dog " + pet_name.title().strip() + " with pupculture!\nThe registration form is attached to this email. \n\nIf the customer uploaded vaccination files or images, they are available in the Dropbox folder Customer Uploads. If they still need to upload these documents, they should visit pupculturenyc.com/upload.\n\n\n\nIf there is an issue with this application, please contact joshmarcus85@gmail.com\n\n", filename]
+	contents = [banner_img, first_name.title().strip() + " " + last_name.title().strip() + " has registered their dog " + pet_name.title().strip() + " with pupculture!\nThe registration form is attached to this email. \n\nIf the customer uploaded vaccination files or images, they are available in the Dropbox folder Customer Uploads. If they still need to upload these documents, they should visit pupculturenyc.com/upload.\n\n\n\nIf there is an issue with this application, please contact joshmarcus85@gmail.com\n\n", filename]
 	yag.send(p_con.recipient_email, subject, contents)
 	
 	### MESSAGE TO ANNOUNCE EMAILING DOCUMENT
