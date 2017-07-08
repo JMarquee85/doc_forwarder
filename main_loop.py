@@ -54,6 +54,8 @@ import get_reg as gr
 import reprint_row as rr
 ###
 import email_it as e_it
+### 
+import first_ten as ft
 
 import gspread
 import json
@@ -130,6 +132,7 @@ while True:
 		# Would like to start the loop automatically and 
 		# interrupt it with a keypress.
 		#gr.check_top_twenty()
+		ft.first_ten()
 		print('\n\n\nPUPCULTURE REGISTRATION MAIN MENU:\nPlease input a number ...')
 		user_selection = input('\n\t1. Run the loop to check for new registrations\t' +
 								'\n\t2. Change the number of registrations scanned (default 20)\t' +
