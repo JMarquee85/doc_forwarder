@@ -1,87 +1,47 @@
-#import main_loop
-## pc_doc_forwarder Registration Function
-# Josh Marcus
-#from main_loop import gc
-
 import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
+from slacker import Slacker
 from mailmerge import MailMerge
+import private_config as p_con
 from datetime import datetime
+import create_docx as c_doc
 
-## If time, or for later, it would be great to come up with a
-## way to search by last name, dog name, etc. and reprint 
-## rather than a row number
-
-## Try to include that ncurses list
+### SLACK CLIENT ###
+from slacker import Slacker
+slack = Slacker(p_con.private_slack_token)
 
 # Pulling Today's Date
 now = datetime.now()
 today_date = now.strftime("%m/%d/%Y %I:%M")
-# from slackclient import SlackClient
-from slacker import Slacker
-
-import private_config as p_con
-import email_pupculture as e_pc
-import import_gsheet_by_row as ig
-import email_it as e_it
-##### SLACK TOKEN #####
-slack = Slacker(p_con.private_slack_token)
 
 # Creating relative path directory
 this_dir = os.path.dirname(os.path.abspath(__file__))
 
+# JSON Credentials and Scope 
 ##### JSON Key #####
+### Move this to private_config soon. 
 json_key = os.path.join(this_dir, 'pcregisterpdfforwarder-1f39ce9a4ac0.json')
 
-from datetime import datetime
-
+##### SCOPE #####
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+# Google Credentials
 credentials = ServiceAccountCredentials.from_json_keyfile_name(json_key, scope)
+global gc
 gc = gspread.authorize(credentials)
+
+# Open Registration Google Spreadsheet
 reg = gc.open_by_url('https://docs.google.com/spreadsheets/d/1dYO0M9iBWVmOYcE8fO9t9rzIaTijrbLQBCNYbulAuF4/edit#gid=136975089')
 global worksheet
 worksheet = reg.get_worksheet(0)
 
-# docx Template File (pc Registration Form with MailMerge Fields)
-global template
-template = os.path.join(this_dir, 'pcregtemplate.docx')
-# Create a mailmerge document
-global document
-document = MailMerge(template)
-
-
-##### CHECK TO SEE IF CUSTOMER FILE HAS ALREADY BEEN LOGGED #####
-def check_for_file(row_number):
+def import_gsheet_by_row(row_number):
 	
-	last_name = worksheet.acell('B' + str(row_number)).value.strip()
-	first_name = worksheet.acell('C' + str(row_number)).value.strip()
-	pet_name = worksheet.acell('R' + str(row_number)).value.strip()
-
-	if last_name.title().strip() and first_name.title().strip() and pet_name.title().strip() in open('inputlog.txt').read():
-	#if any(s in line for s in test_strings):
-		print("\nRegistration for " + pet_name.title().strip() + " " + last_name.title().strip() + " found!")
-		return
-	# Need to make sure fields are not blank
-	elif not pet_name and not last_name and not first_name:
-		print("\n Aww man... looks like some of the fields are blank. I'm going to move on.")
-		
-	else:
-		ig.import_gsheet_by_row(row_number)
-		create_docx(row_number)
-		e_it.email_it(row_number)
-		return
-		
-##### This for loop checks the top twenty entries
-##### to see if they have already registered. 		
-def check_top_twenty():
-	for x in range(1,21):
-		print("\n\nCHECKING IF ENTRY " + str(x) + " has registered ...\n\t\t(ctrl-c to quit)")
-		ig.import_gsheet_by_row(x)
-		check_for_file(x)
-
-##### CREATE DOCX FILE #####
-def create_docx(row_number):
+	# docx Template File (pc Registration Form with MailMerge Fields)
+	template = os.path.join(this_dir, 'pcregtemplate.docx')
+	# Create a mailmerge document and accept the template file
+	document = MailMerge(template)	
+	
 	##### VARIABLES SECTION #####
 	### Import variables from Google Sheet
 	time_registered = worksheet.acell('A' + str(row_number)).value.strip()
@@ -176,96 +136,22 @@ def create_docx(row_number):
 	terms_agreement = worksheet.acell('BF' + str(row_number)).value.strip()
 	# Receives another email address here for some reason. 
 	email_again = worksheet.acell('BG' + str(row_number)).value.strip()
-
 	
-	#last_name = worksheet.acell('B' + str(row_number)).value.strip()
-	#first_name = worksheet.acell('C' + str(row_number)).value.strip()
-	#pet_name = worksheet.acell('R' + str(row_number)).value.strip()
-	
-	print("\nCreating customer document for " + pet_name.title().strip() + 
-			" " + last_name.title().strip() + " ...")
-	document.merge(
-		last_name = last_name,
-		first_name = first_name,
-		address = street,
-		apartment = apt,
-		cross_streets = cross_streets,
-		city = city,
-		state = state, 
-		zip = zip_code,
-		home_phone = home_phone,
-		cell_phone = cell_phone,
-		business_phone = business_phone,
-		email_address = email_address,
-		reference = reference,
-		emergency_contacts = emergency_contacts,
-		membership = membership,
-		keys = keys,
-		pet_name = pet_name,
-		pet_nick = pet_nick,
-		breed = breed,
-		weight = weight,
-		sex = sex,
-		dob = dob,
-		color = color,
-		spayed = fixed,
-		how_long_owned = length_owned,
-		brand_food = brand_food,
-		times_fed = times_per_day_feed,
-		size_portion = serving_size,
-		allergies_digestive = allergies_digestive,
-		treats_ok = treats_ok,
-		fed_during_daycare = fed_during_daycare,
-		in_home_restrictions = home_restriction,
-		water_out = water_out,
-		dry_food = dry_food, 
-		leash_location = leash_location,
-		where_is_the_stuff = where_is_the_stuff,
-		where_is_the_other_stuff = where_is_the_other_stuff,
-		lights_locks = lights_locks,
-		quirks = helpful_info,
-		dog_allowed = dog_allowed,
-		behavior = behavior,
-		behavior_new_people = behavior_new_people,
-		behavior_leash = behavior_leash,
-		housebroken = housebroken,
-		last_vet = last_vet,
-		flea_prevention = flea_prevention,
-		medical_conditions = medical_conditions,
-		medication = medications,
-		ever_bitten = ever_attacked,
-		vet_name = vet_name,
-		vet_phone = vet_phone,
-		vet_address = vet_address,
-		vet_city = vet_city,
-		vet_state = vet_state,
-		date = today_date)
-		# Write completed document
-		# First, change directory to submitted_customer_files
-	print("Writing new customer file ...")
-	os.chdir('submitted_customer_files')
-	document.write(last_name.title().strip() + '_' + pet_name.title().strip() + '.docx')
-	os.chdir('..')
-	# Terminal Message to Confirm Success
-	new_reg_msg = "\nA registration docx form for " + pet_name.title().strip() + " " + last_name.title().strip() + " has been created!\t"
-	print(new_reg_msg)
 	'''
-	### Convert docx to pdf and store in folder called pdfs
-	# Call w2p here
-	file_to_convert = last_name.title() + ', ' + pet_name.title() + '.docx'
-	converted_pdf = last_name.title() + ', ' + pet_name.title() + '.pdf'
-	w2p.convx_to_pdf(file_to_convert, converted_pdf)
+	##### CHECK FOR EMPTY FIELDS #####
+	#### Check for empty fields in registration. Maybe picked the wrong row?
+	if last_name or first_name or pet_name == '':
+		blank_ok = input("\nAwww man, it looks like some fields are blank and you might get an empty document.\n\tAre you sure you still want to print row " + str(row_number) + "?  (y or n)\n\t")
+		if blank_ok == 'y':
+			print("\n\tOkay! I'll send you what I have ...")
+			c_doc.create_docx(row_number)
+			# Do shit
+		elif blank_ok == 'n':
+			print("\n\tNo problem! Heading back to the home screen ...")
+			
+			# Do other shit	
+		else:
+			print("\nUnrecognized response. Please type y or n.\n")
+	else:
+		pass
 	'''
-	### Post Slack Message to Update Channel
-	slack.chat.post_message(p_con.slack_channel, new_reg_msg)
-	
-	##### LOGGING TO TEXT FILE #####
-	with open('inputlog.txt', 'a') as doglog:
-		doglog.write('\n' + last_name.title().strip() + ', ' + first_name.title().strip() + ' (Owner), ' + pet_name.title().strip() + ':  ' + str(today_date)) 
-	### Confirm Logging ###
-	print("Registration information for " + pet_name.title().strip() + " " + last_name.title().strip() + 
-				" has been logged to inputlog.txt!")
-		
-	return
-
-

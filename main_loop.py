@@ -132,7 +132,7 @@ while True:
 		gr.check_top_twenty()
 		#gr.check_for_file()
 		#gr.create_docx()
-		e_pc.email_pupculture()
+		#e_pc.email_pupculture()
 		#registration_email()
 	except KeyboardInterrupt:
 		print("\nOK! Exiting program!\n") 
