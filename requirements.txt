@@ -12,7 +12,7 @@ email==6.0.0a1
 ez-setup==0.9
 gspread==0.6.2
 html5lib==0.999
-httplib2==0.10.3
+httplib2==0.18.0
 ipython==6.1.0
 ipython-genutils==0.2.0
 jedi==0.10.2
