@@ -39,7 +39,7 @@ pyasn1==0.2.3
 pyasn1-modules==0.0.8
 pycups==1.9.73
 pycurl==7.43.0
-Pygments==2.2.0
+Pygments==2.7.4
 pygobject==3.20.0
 PyInstaller==3.3.dev0+g5fd013b
 python-apt==1.1.0b1
