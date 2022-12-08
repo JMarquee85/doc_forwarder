@@ -2,11 +2,7 @@
 A very simple backend application to turn Google Form spreadsheet fields
 into docx files and email them. <br><br>
 
-Project written for http://register.pupculturenyc.com<br>
-
- Written by Josh Marcus <br>
- joshmarcus85@gmail.com <br>
- http://jmarquee.xyz <br>
+Project originally written for a former client<br>
 
 # WHAT IT DOES: <br>
  - Watches a Google Spreadsheet for changes 
